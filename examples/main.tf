@@ -15,8 +15,7 @@ provider "logiprovider" {
 }
 
 resource "logiprovider_service" "all" {
-  name = "KBTEST57" 
-  created = timestamp()
+  name = "KBTEST63" 
   service_type_name = "Recurring Service"
   is_active = true
   is_tax_exempt = false

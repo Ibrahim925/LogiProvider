@@ -6,7 +6,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	lc "github.com/ibrahim925/LogiCore"
 )
 
@@ -29,9 +28,8 @@ func Service() *schema.Resource {
 				Required: true,
 			},
 			"created": {
-				Type:     schema.TypeString,
-				Required: true,
-				ValidateFunc: validation.IsRFC3339Time,
+				Type:	  schema.TypeString,
+				Computed: true,
 			},
 			"is_active": {
 				Type:     schema.TypeBool,
@@ -74,7 +72,6 @@ func resourceServiceCreate(context context.Context, d *schema.ResourceData, m in
 
 	service.Name = d.Get("name").(string)
 	service.ServiceTypeName = d.Get("service_type_name").(string)
-	service.Created = d.Get("created").(string)
 	service.IsActive = d.Get("is_active").(bool)
 	service.IsTaxExempt = d.Get("is_tax_exempt").(bool)
 	service.IsInclusiveTaxes = d.Get("is_inclusive_taxes").(bool)
@@ -91,6 +88,9 @@ func resourceServiceCreate(context context.Context, d *schema.ResourceData, m in
 	serviceIDStr := strconv.Itoa(postResponse.Results.Items[0].Identity)
 
 	d.SetId(serviceIDStr)
+
+	timeCreated := postResponse.Results.Items[0].Instance.Created
+	d.Set("created", timeCreated)
 
 	return diags
 }
@@ -118,15 +118,31 @@ func resourceServiceRead(context context.Context, d *schema.ResourceData, m inte
 }
 
 func resourceServiceUpdate(context context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	//	client := m.(*lc.Client)
+	client := m.(*lc.Client)
 
 	var diags diag.Diagnostics
 
-	//	serviceIDStr := d.Id()
-	//	serviceID, err := strconv.Atoi(serviceIDStr)
-	//	if err != nil {
-	//		return diag.FromErr(err)
-	//	}
+	serviceIDStr := d.Id()
+	serviceID, err := strconv.Atoi(serviceIDStr)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	if d.HasChanges("name", "service_type_name", "created", "is_active", "is_tax_exempt", "is_inclusive_taxes", "default_service_status_type_name", "description") {
+		updatedService := lc.ServicePatchStruct{}
+
+		updatedService.Name = d.Get("name").(string)
+		updatedService.ServiceTypeName = d.Get("service_type_name").(string)
+		updatedService.IsActive = d.Get("is_active").(bool)
+		updatedService.IsTaxExempt = d.Get("is_tax_exempt").(bool)
+		updatedService.IsInclusiveTaxes = d.Get("is_inclusive_taxes").(bool)
+		updatedService.DefaultServiceStatusTypeName = d.Get("default_service_status_type_name").(string)
+		updatedService.Description = d.Get("description").(string)
+
+		if _, err := client.UpdateService(serviceID, updatedService); err != nil {
+			return diag.FromErr(err)
+		}
+	}
 
 	return diags
 }
@@ -154,7 +170,6 @@ func resourceServiceDelete(context context.Context, d *schema.ResourceData, m in
 func setService(d *schema.ResourceData, data *lc.ServiceGetResponse) {
 	d.Set("name", data.Instance.Name)
 	d.Set("service_type_name", data.Instance.ServiceTypeName)
-	d.Set("created", data.Instance.Created)
 	d.Set("is_active", data.Instance.IsActive)
 	d.Set("is_tax_exempt", data.Instance.IsTaxExempt)
 	d.Set("is_inclusive_taxes", data.Instance.IsInclusiveTaxes)
