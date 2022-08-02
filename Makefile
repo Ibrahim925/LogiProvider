@@ -2,7 +2,7 @@ TEST?=$$(go list ./... | grep -v 'vendor')
 HOSTNAME=logisense.com
 NAMESPACE=service
 NAME=logiprovider
-BINARY=service-${NAME}
+BINARY=terraform-provider-${NAME}
 VERSION=0.2
 OS_ARCH=darwin_arm64
 
@@ -26,6 +26,9 @@ release:
 	GOOS=windows GOARCH=amd64 go build -o ./bin/${BINARY}_${VERSION}_windows_amd64
 
 install: build
+	rm -rf examples/.terraform examples/.terraform.lock.hcl examples/terraform.tfstate
+	rm -rf ~/.terraform.d/plugins/${HOSTNAME}
+	rm -rf ~/.terraform.d/plugin-cache/${HOSTNAME}
 	mkdir -p ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${OS_ARCH}
 	mv ${BINARY} ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${OS_ARCH}
 

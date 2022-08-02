@@ -14,4 +14,10 @@ provider "logiprovider" {
   host = "https://vnexttrainingps.dev.logisensebilling.com"
 }
 
-data "logiprovider_service" "all" {}
+data "logiprovider_services" "all" {
+
+}
+
+output "all" {
+  value=data.logiprovider_services.all
+}
