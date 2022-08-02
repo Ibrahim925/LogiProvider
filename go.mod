@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.19.0
-	github.com/ibrahim925/LogiCore v1.0.8
+	github.com/ibrahim925/LogiCore v1.1.2
 )
 
 require (

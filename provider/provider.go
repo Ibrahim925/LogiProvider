@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	lc "github.com/ibrahim925/LogiCore"
 	"terraform-logiprovider/provider/datasource"
-	//"terraform-logiprovider/provider/resource"
+	"terraform-logiprovider/provider/resource"
 )
 
 //Define the provider
@@ -38,7 +38,7 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			//"logiprovider_service": resource.Service(),
+			"logiprovider_service": resource.Service(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"logiprovider_service":  datasource.Service(),

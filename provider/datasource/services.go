@@ -113,25 +113,17 @@ func servicesRead(context context.Context, d *schema.ResourceData, m interface{}
 		return diag.FromErr(err)
 	}
 
-	err = setServices(d, data)
-	if err != nil {
-		return diag.FromErr(err)
-	}
+	setServices(d, data)
 
 	return diags
 }
 
-func setServices(d *schema.ResourceData, data *lc.ServicesGetResponse) error {
+func setServices(d *schema.ResourceData, data *lc.ServicesGetResponse) {
 	d.SetId(data.TrackingID)
 	d.Set("tracking_id", data.TrackingID)
 	d.Set("total_count", data.TotalCount)
 	transformedItems := transformItems(&data.Items)
-	err := d.Set("items", *transformedItems)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	d.Set("items", *transformedItems)
 }
 
 func transformItems(items *[]lc.Item) *[]map[string]interface{} {
