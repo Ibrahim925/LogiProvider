@@ -12,4 +12,5 @@
 
 <h2>Adding new data sources/resources</h2>
 Data Sources: Create a <DATA-SOURCE-NAME>.go file under provider/datasource. Use provider/datasource/service.go as an example.
+<br/>
 Resources: Create a <RESOURCE-NAME>.go file under provider/resource. Use provider/resource/resource.go as an example.
