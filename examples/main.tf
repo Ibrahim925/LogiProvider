@@ -7,11 +7,12 @@ terraform {
   }
 }
 
+// TODO: ENTER ACCESS DETAILS HERE (PREFERABLY THROUGH ENVIRONMENT VARIABLES)
 provider "logiprovider" {
-  username = "admin"
-  password = "admin"
-  client_id = "044b8ad6006845c29446b2f18e5b5909"
-  host = "https://vnexttrainingps.dev.logisensebilling.com"
+  username = "EXAMPLE" 
+  password = "EXAMPLE"
+  client_id = "EXAMPLE"
+  host = "EXAMPLE"
 }
 
 resource "logiprovider_service" "all" {
