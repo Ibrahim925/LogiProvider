@@ -1,3 +1,4 @@
+// This is where the base provider schema is configured
 package provider
 
 import (
@@ -14,6 +15,7 @@ import (
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
+			// Credentials that the user will need to enter in the terraform file
 			"host": {
 				Type:        schema.TypeString,
 				Required:    true,
@@ -38,9 +40,12 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
+			// Resources allow customers to define services in LSBS and perform
+			// CRUD operations on them
 			"logiprovider_service": resource.Service(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
+			// Data sources allow customers to read services in LSBS
 			"logiprovider_service":  datasource.Service(),
 			"logiprovider_services": datasource.Services(),
 		},
@@ -48,6 +53,7 @@ func Provider() *schema.Provider {
 	}
 }
 
+// Sets up the provider with the credentials the user entered to create an instance of the API client
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	host := d.Get("host").(string)
 	username := d.Get("username").(string)
@@ -55,7 +61,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	client_id := d.Get("client_id").(string)
 
 	var diags diag.Diagnostics
-
+	
+	// Create new API client
 	client, err := lc.NewClient(host, username, password, client_id)
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{

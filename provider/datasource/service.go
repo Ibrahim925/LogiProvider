@@ -1,3 +1,4 @@
+// Define data sources
 package datasource
 
 import (
@@ -8,6 +9,8 @@ import (
 	lc "github.com/ibrahim925/LogiCore"
 )
 
+// Defines schema for data source response body
+// This data source gets the data for one specific service
 func Service() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: serviceRead,
@@ -95,23 +98,29 @@ func Service() *schema.Resource {
 	}
 }
 
+// Get the data from LSBS through the API client and output the data to the TF file 
 func serviceRead(context context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	// Get API client instance that was defined in providerConfigure
 	client := m.(*lc.Client)
+
+	// Get service id defined by client in the .tf file
 	id := d.Get("id").(int)
 
 	// Warnings are stored here
 	var diags diag.Diagnostics
 
-	data, err := client.GetService(id)
+	// Use API Client's GetService method to retrieve a specific service from LSBS
+	getServiceResponse, err := client.GetService(id)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	setService(d, data)
+	setService(d, getServiceResponse)
 
 	return diags
 }
 
+// Set the terraform schema keys to their corresponding API response values
 func setService(d *schema.ResourceData, data *lc.ServiceGetResponse) {
 	d.Set("tracking_id", data.TrackingID)
 	d.Set("identity", data.Instance.Identity)

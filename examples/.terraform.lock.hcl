@@ -5,6 +5,6 @@ provider "logisense.com/service/logiprovider" {
   version     = "0.2.0"
   constraints = "0.2.0"
   hashes = [
-    "h1:xciUqSF568HHiLSoeW+B/IiWxjQD/opjLe44ISW8Tow=",
+    "h1:XXAH9XIGW+wQRK7SPcHJBKwLoITzyAynAUGHAuBqygs=",
   ]
 }
